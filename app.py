@@ -4,7 +4,15 @@ from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__)
 
 articles = [
-    {"id": 1, "title": "Первая статья", "content": "Это контент первой статьи."},
+    {"id": 1, "title": "Список руководства модерации", "content":
+    print("Руководитель модерации - https://vk.com/sakaromeow")
+    print("Зам.Руководителя модерации - https://vk.com/drozdvk")
+    print("Зам.Руководителя модерации - https://vk.com/mahch29")
+    print("Зам.Руководителя модерации - https://vk.com/surpwhitewaves")
+    print("Главный модератор - https://vk.com/mayson2007")
+    print("Зам.Главного модератора - https://vk.com/n.ivanov.official")
+    print("Зам.Главного модератора - https://vk.com/kl_llli")
+    print("Куратор модерации - https://vk.com/motvot314")},
     {"id": 2, "title": "Вторая статья", "content": "Это контент второй статьи."},
 ]
 
