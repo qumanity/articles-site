@@ -1,22 +1,17 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <title>Главная</title>
+    <title>Список статей</title>
 </head>
 <body>
-    <header>
-        <h1>Минималистичный блог</h1>
-    </header>
-    <main>
-        <ul>
-            {% for article in articles %}
-                <li><a href="{{ url_for('article', article_id=article['id']) }}">{{ article['title'] }}</a></li>
-            {% endfor %}
-        </ul>
-    </main>
+    <h1>Список статей</h1>
+    <ul>
+        {% for article in articles %}
+        <li><a href="{{ url_for('article', article_id=article.id) }}">{{ article.title }}</a></li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('admin') }}">Добавить новую статью</a>
 </body>
 </html>
