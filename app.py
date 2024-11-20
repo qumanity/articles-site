@@ -7,14 +7,14 @@ articles = [
         "id": 1,
         "title": "Список руководства модерации",
         "content": """
-        Руководитель модерации - https://vk.com/sakaromeow
-        Зам.Руководителя модерации - https://vk.com/drozdvk
-        Зам.Руководителя модерации - https://vk.com/mahch29
-        Зам.Руководителя модерации - https://vk.com/surphwhitewaves
-        Главный модератор - https://vk.com/mayson2007
-        Зам.Главного модератора - https://vk.com/n.ivanov.official
-        Зам.Главного модератора - https://vk.com/kl_llli
-        Куратор модерации - https://vk.com/motvot314
+        Руководитель модерации - https://vk.com/sakaromeow\n
+        Зам.Руководителя модерации - https://vk.com/drozdvk\n
+        Зам.Руководителя модерации - https://vk.com/mahch29\n
+        Зам.Руководителя модерации - https://vk.com/surphwhitewaves\n
+        Главный модератор - https://vk.com/mayson2007\n
+        Зам.Главного модератора - https://vk.com/n.ivanov.official\n
+        Зам.Главного модератора - https://vk.com/kl_llli\n
+        Куратор модерации - https://vk.com/motvot314\n
         """
     },
     {
