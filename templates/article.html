@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ article.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>{{ article.title }}</h1>
-    <!-- Преобразуем переносы строк (\n) в HTML-теги <br> -->
-    <p>{{ article.content.replace('\n', '<br>')|safe }}</p>
-    <a href="{{ url_for('index') }}">← Вернуться к списку статей</a>
+    <div id="content">
+        <h1>{{ article.title }}</h1>
+        <p>{{ article.content | safe }}</p>
+        <a href="{{ url_for('index') }}">Назад к статьям</a>
+    </div>
 </body>
 </html>
