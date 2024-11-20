@@ -1,22 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <title>Админ-панель</title>
+    <title>Добавить статью</title>
 </head>
 <body>
-    <header>
-        <h1>Админ-панель</h1>
-    </header>
-    <main>
-        <form action="/admin" method="post">
-            <input type="text" name="title" placeholder="Заголовок" required>
-            <textarea name="content" placeholder="Контент" required></textarea>
-            <button type="submit">Добавить статью</button>
-        </form>
-    </main>
+    <h1>Добавить новую статью</h1>
+    <form method="POST">
+        <label for="title">Заголовок:</label><br>
+        <input type="text" id="title" name="title" required><br><br>
+        <label for="content">Контент:</label><br>
+        <textarea id="content" name="content" rows="10" cols="50" required></textarea><br><br>
+        <button type="submit">Добавить</button>
+    </form>
+    <a href="{{ url_for('index') }}">← Вернуться к списку статей</a>
 </body>
 </html>
