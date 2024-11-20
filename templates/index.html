@@ -1,17 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список статей</title>
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Список статей</h1>
-    <ul>
-        {% for article in articles %}
-        <li><a href="{{ url_for('article', article_id=article.id) }}">{{ article.title }}</a></li>
-        {% endfor %}
-    </ul>
-    <a href="{{ url_for('admin') }}">Добавить новую статью</a>
+    <div id="content">
+        <h1>Мой сайт</h1>
+        <div>
+            {% for article in articles %}
+                <div class="article">
+                    <h2>{{ article.title }}</h2>
+                    <p>{{ article.content | safe }}</p>
+                    <a href="{{ url_for('article', article_id=article.id) }}">Читать далее</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 </body>
 </html>
