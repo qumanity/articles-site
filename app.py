@@ -1,8 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
 
 # Настройка Flask-Login
 login_manager = LoginManager()
@@ -20,11 +27,22 @@ users = {'admin': {'password': 'password'}}
 def load_user(user_id):
     return User(user_id)
 
-# Статический список статей для примера
-articles = [
-    {"id": 1, "title": "Первая статья", "content": "Контент первой статьи."},
-    {"id": 2, "title": "Вторая статья", "content": "Контент второй статьи."}
-]
+# Модель статьи
+class Article(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+
+    def __repr__(self):
+        return f"Article('{self.title}', '{self.content[:20]}')"
+
+# Создание админки
+class AdminView(ModelView):
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.id == 'admin'
+
+admin = Admin(app, name='Admin Panel', template_mode='bootstrap3')
+admin.add_view(AdminView(Article, db.session))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -34,7 +52,7 @@ def login():
         if username in users and users[username]['password'] == password:
             user = User(username)
             login_user(user)
-            return redirect(url_for('admin'))
+            return redirect('/admin')
         else:
             return 'Неверные учетные данные', 401
     return render_template('login.html')
@@ -43,51 +61,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('index'))
-
-@app.route('/')
-def index():
-    return render_template('index.html', articles=articles)
-
-@app.route('/article/<int:article_id>')
-def article(article_id):
-    article = next((a for a in articles if a["id"] == article_id), None)
-    if article is None:
-        return "Статья не найдена", 404
-    return render_template('article.html', article=article)
-
-@app.route('/admin', methods=['GET', 'POST'])
-@login_required
-def admin():
-    if request.method == 'POST':
-        title = request.form['title']
-        content = request.form['content']
-        new_article = {"id": len(articles) + 1, "title": title, "content": content}
-        articles.append(new_article)
-        return redirect(url_for('admin'))
-    return render_template('admin.html', articles=articles)
-
-@app.route('/admin/edit/<int:article_id>', methods=['GET', 'POST'])
-@login_required
-def edit_article(article_id):
-    article = next((a for a in articles if a["id"] == article_id), None)
-    if not article:
-        return "Статья не найдена", 404
-
-    if request.method == 'POST':
-        article['title'] = request.form['title']
-        article['content'] = request.form['content']
-        return redirect(url_for('admin'))
-
-    return render_template('edit_article.html', article=article)
-
-@app.route('/admin/delete/<int:article_id>', methods=['POST'])
-@login_required
-def delete_article(article_id):
-    global articles
-    articles = [a for a in articles if a["id"] != article_id]
-    return redirect(url_for('admin'))
+    return redirect('/')
 
 if __name__ == '__main__':
     app.run(debug=True)
-
