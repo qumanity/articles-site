@@ -1,23 +1,15 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Добавить статью</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-    <div id="content">
-        <h1>Добавить новую статью</h1>
-        <form method="POST">
-            <label for="title">Заголовок:</label>
-            <input type="text" id="title" name="title" required>
+<form method="post" action="{{ url_for('admin') }}">
+    <label for="title">Название статьи:</label>
+    <input type="text" id="title" name="title" required>
 
-            <label for="content">Контент:</label>
-            <textarea id="content" name="content" required></textarea>
+    <label for="content">Содержимое статьи:</label>
+    <textarea id="content" name="content"></textarea>
 
-            <input type="submit" value="Добавить статью">
-        </form>
-    </div>
-</body>
-</html>
+    <button type="submit">Добавить статью</button>
+</form>
+
+<!-- Подключение CKEditor -->
+<script src="https://cdn.ckeditor.com/4.20.2/standard/ckeditor.js"></script>
+<script>
+    CKEDITOR.replace('content');  // Применение CKEditor к полю
+</script>
