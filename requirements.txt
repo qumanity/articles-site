@@ -11,4 +11,4 @@ MarkupSafe==3.0.2
 setuptools==75.6.0
 Werkzeug==2.3.8
 WTForms==3.2.1
-sqlalchemy
+Flask-SQLAlchemy==3.0.2
