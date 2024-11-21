@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ASTRAKHAN MODERTORS{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Мой сайт</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Главная</a>
+            <a href="{{ url_for('admin') }}">Добавить статью</a>
+        </nav>
+    </header>
+    
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+    
+</body>
+</html>
