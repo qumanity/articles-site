@@ -1,27 +1,49 @@
 from flask import Flask, render_template, request, redirect, url_for
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
 
-# Список статей с использованием переносов строк (\n)
+# Настройка Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+# Модели пользователей
+class User(UserMixin):
+    def __init__(self, id):
+        self.id = id
+
+# Статический пользователь для тестирования
+users = {'admin': {'password': 'password'}}
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User(user_id)
+
+# Статический список статей для примера
 articles = [
-    {
-        "id": 1,
-        "title": "Список руководства модерации",
-        "content": """Руководитель модерации - https://vk.com/sakaromeow
-Зам.Руководителя модерации - https://vk.com/drozdvk
-Зам.Руководителя модерации - https://vk.com/mahch29
-Зам.Руководителя модерации - https://vk.com/surphwhitewaves
-Главный модератор - https://vk.com/mayson2007
-Зам.Главного модератора - https://vk.com/n.ivanov.official
-Зам.Главного модератора - https://vk.com/kl_llli
-Куратор модерации - https://vk.com/motvot314"""
-    },
-    {
-        "id": 2,
-        "title": "Вторая статья",
-        "content": "Это контент второй статьи.\nДополнительная строка контента второй статьи."
-    }
+    {"id": 1, "title": "Первая статья", "content": "Контент первой статьи."},
+    {"id": 2, "title": "Вторая статья", "content": "Контент второй статьи."}
 ]
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username in users and users[username]['password'] == password:
+            user = User(username)
+            login_user(user)
+            return redirect(url_for('admin'))
+        else:
+            return 'Неверные учетные данные', 401
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
 
 @app.route('/')
 def index():
@@ -29,23 +51,43 @@ def index():
 
 @app.route('/article/<int:article_id>')
 def article(article_id):
-    # Поиск статьи по ID
     article = next((a for a in articles if a["id"] == article_id), None)
     if article is None:
-        return "Article not found", 404
+        return "Статья не найдена", 404
     return render_template('article.html', article=article)
 
 @app.route('/admin', methods=['GET', 'POST'])
+@login_required
 def admin():
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
-        if not title or not content:
-            return "Both title and content are required", 400
         new_article = {"id": len(articles) + 1, "title": title, "content": content}
         articles.append(new_article)
-        return redirect(url_for('index'))
-    return render_template('admin.html')
+        return redirect(url_for('admin'))
+    return render_template('admin.html', articles=articles)
+
+@app.route('/admin/edit/<int:article_id>', methods=['GET', 'POST'])
+@login_required
+def edit_article(article_id):
+    article = next((a for a in articles if a["id"] == article_id), None)
+    if not article:
+        return "Статья не найдена", 404
+
+    if request.method == 'POST':
+        article['title'] = request.form['title']
+        article['content'] = request.form['content']
+        return redirect(url_for('admin'))
+
+    return render_template('edit_article.html', article=article)
+
+@app.route('/admin/delete/<int:article_id>', methods=['POST'])
+@login_required
+def delete_article(article_id):
+    global articles
+    articles = [a for a in articles if a["id"] != article_id]
+    return redirect(url_for('admin'))
 
 if __name__ == '__main__':
     app.run(debug=True)
+
