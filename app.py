@@ -107,9 +107,12 @@ def edit_article(article_id):
     return render_template('edit_article.html', form=form, article=article)
 
 # Создание базы данных и таблиц, если они еще не существуют
-@app.before_first_request
 def create_tables():
-    db.create_all()  # Создаем все таблицы
+    db.create_all()
+
+@app.before_first_request
+def init_db():
+    create_tables()
 
 if __name__ == '__main__':
     app.run(debug=True)
