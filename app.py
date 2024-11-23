@@ -2,18 +2,24 @@ from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField
 from wtforms.validators import DataRequired
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
+# Создание экземпляра приложения
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  # Строка подключения к базе данных SQLite
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Отключаем отслеживание изменений в базе данных
 
+# Настройка базы данных
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Создание базы данных и подключения
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 # Настройка Flask-Login
 login_manager = LoginManager()
@@ -106,11 +112,11 @@ def edit_article(article_id):
         return redirect(url_for('articles'))  # Перенаправляем на страницу списка статей
     return render_template('edit_article.html', form=form, article=article)
 
-# Функция для создания базы данных и таблиц
-def create_db():
-    # Создаем все таблицы в базе данных, если они еще не существуют
-    db.create_all()
+# Главная страница
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 if __name__ == '__main__':
-    create_db()  # Создаем базы данных перед запуском приложения
+    # Запуск приложения с миграциями
     app.run(debug=True)
