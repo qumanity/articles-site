@@ -107,14 +107,9 @@ def edit_article(article_id):
     return render_template('edit_article.html', form=form, article=article)
 
 # Создание базы данных и таблиц, если они еще не существуют
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 @app.before_first_request
 def create_tables():
-    db.create_all()
+    db.create_all()  # Создаем все таблицы
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
-if __name__ == '__main__':
-    db.create_all()
-    app.run(debug=True)
+    app.run(debug=True)  # Запускаем приложение
