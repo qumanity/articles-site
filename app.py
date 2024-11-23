@@ -1,6 +1,4 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
-from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_wtf import FlaskForm
@@ -48,31 +46,20 @@ class Article(db.Model):
     def __repr__(self):
         return f"Article('{self.title}', '{self.content[:20]}')"
 
-# Форма для статьи
-class ArticleForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Content', validators=[DataRequired()])
-    submit = SubmitField('Save')
-
 # Форма для логина
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = StringField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
 
+# Форма для регистрации
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = StringField('Password', validators=[DataRequired()])
+    confirm_password = StringField('Confirm Password', validators=[DataRequired()])
+    submit = SubmitField('Register')
+
 # Админка
-class ArticleView(ModelView):
-    def is_accessible(self):
-        return current_user.is_authenticated  # Проверяем, вошел ли пользователь
-
-    def inaccessible_callback(self, name, **kwargs):
-        return redirect('/login')  # Перенаправляем на страницу логина, если пользователь не авторизован
-
-# Регистрация админки
-admin = Admin(app, name='Admin Panel', template_mode='bootstrap4')
-admin.add_view(ArticleView(Article, db.session))  # Подключаем модель статьи в админке
-
-# Главная страница для логина
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -85,38 +72,34 @@ def login():
             flash('Invalid credentials')  # Если логин или пароль неверные
     return render_template('login.html', form=form)
 
-# Выход из системы
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(form.password.data, method='sha256')
+        user = User(username=form.username.data, password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        flash('Your account has been created!', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html', form=form)
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()  # Выход из текущей сессии
     return redirect('/')
 
-# Страница со списком статей
 @app.route('/articles')
 def articles():
     articles = Article.query.all()  # Получаем все статьи
     return render_template('articles.html', articles=articles)
 
-# Страница для редактирования статьи
 @app.route('/articles/edit/<int:article_id>', methods=['GET', 'POST'])
 @login_required
 def edit_article(article_id):
     article = Article.query.get_or_404(article_id)  # Получаем статью по ID
-    form = ArticleForm(obj=article)
-    if form.validate_on_submit():
-        article.title = form.title.data  # Обновляем заголовок
-        article.content = form.content.data  # Обновляем содержание
-        db.session.commit()  # Сохраняем изменения в базе данных
-        flash('Article updated successfully!')  # Сообщение об успешном обновлении
-        return redirect(url_for('articles'))  # Перенаправляем на страницу списка статей
-    return render_template('edit_article.html', form=form, article=article)
-
-# Главная страница
-@app.route('/')
-def home():
-    return render_template('index.html')
+    return render_template('edit_article.html', article=article)
 
 if __name__ == '__main__':
-    # Запуск приложения с миграциями
     app.run(debug=True)

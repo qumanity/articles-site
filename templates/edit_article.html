@@ -1,24 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Редактировать статью</title>
-</head>
-<body>
-    <h1>Edit Article</h1>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.title.label }}<br>
-            {{ form.title(size=30) }}
-        </p>
-        <p>
-            {{ form.content.label }}<br>
-            {{ form.content(cols=50, rows=10) }}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
-    <a href="{{ url_for('articles') }}">Back to Articles</a>
-</body>
-</html>
+{% extends 'layout.html' %}
+
+{% block content %}
+<h2>Edit Article</h2>
+<form id="editArticleForm" method="POST" action="{{ url_for('edit_article', article_id=article.id) }}">
+    <div>
+        <label for="articleTitle">Title</label>
+        <input type="text" id="articleTitle" name="title" value="{{ article.title }}" required>
+    </div>
+    <div>
+        <label for="articleContent">Content</label>
+        <textarea id="articleContent" name="content" required>{{ article.content }}</textarea>
+    </div>
+    <button type="submit">Save Changes</button>
+</form>
+{% endblock %}

@@ -1,8 +1,8 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<h2>Login</h2>
-<form id="loginForm" method="POST" action="{{ url_for('login') }}">
+<h2>Register</h2>
+<form id="registerForm" method="POST" action="{{ url_for('register') }}">
     <div>
         <label for="username">Username</label>
         <input type="text" id="username" name="username" required>
@@ -11,6 +11,10 @@
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required>
     </div>
-    <button type="submit">Login</button>
+    <div>
+        <label for="confirm_password">Confirm Password</label>
+        <input type="password" id="confirm_password" name="confirm_password" required>
+    </div>
+    <button type="submit">Register</button>
 </form>
 {% endblock %}
