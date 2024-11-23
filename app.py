@@ -106,7 +106,7 @@ def edit_article(article_id):
         return redirect(url_for('articles'))  # Перенаправляем на страницу списка статей
     return render_template('edit_article.html', form=form, article=article)
 
-# Создание базы данных и таблиц, если они еще не существуют
+# Создание базы данных и таблиц
 @app.before_first_request
 def create_tables():
     db.create_all()  # Создает все таблицы в базе данных
