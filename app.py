@@ -112,4 +112,4 @@ def create_tables():
     db.create_all()  # Создаем все таблицы
 
 if __name__ == '__main__':
-    app.run(debug=True)  # Запускаем приложение
+    app.run(debug=True)
